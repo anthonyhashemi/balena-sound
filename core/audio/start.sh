@@ -37,15 +37,23 @@ function route_input_sink() {
   esac
 }
 
+# # Route any existing source to the input router ("balena-sound.input")
+# function route_input_source() {
+#   local INPUT_DEVICE=$(arecord -l | awk '/card [0-9]:/ { print $3 }')
+
+#   if [[ -n "$INPUT_DEVICE" ]]; then
+#     local INPUT_DEVICE_FULLNAME="alsa_input.$INPUT_DEVICE.analog-stereo"
+#     echo "Routing audio from '$INPUT_DEVICE_FULLNAME' into 'balena-sound.input sink'"
+#     echo -e "\nload-module module-loopback source='$INPUT_DEVICE_FULLNAME' sink='balena-sound.input'" >> "$CONFIG_FILE"
+#   fi
+
+# }
+
 # Route any existing source to the input router ("balena-sound.input")
 function route_input_source() {
-  local INPUT_DEVICE=$(arecord -l | awk '/card [0-9]:/ { print $3 }')
-
-  if [[ -n "$INPUT_DEVICE" ]]; then
-    local INPUT_DEVICE_FULLNAME="alsa_input.$INPUT_DEVICE.analog-stereo"
-    echo "Routing audio from '$INPUT_DEVICE_FULLNAME' into 'balena-sound.input sink'"
-    echo -e "\nload-module module-loopback source='$INPUT_DEVICE_FULLNAME' sink='balena-sound.input'" >> "$CONFIG_FILE"
-  fi
+  local INPUT_DEVICE_FULLNAME="alsa_input.usb-soundcard-0.multichannel-input"
+  echo "Routing audio from '$INPUT_DEVICE_FULLNAME' into 'balena-sound.input sink'"
+  echo -e "\nload-module module-loopback source='$INPUT_DEVICE_FULLNAME' sink='balena-sound.input'" >> "$CONFIG_FILE"
 
 }
 
